@@ -15,6 +15,13 @@ public class Entry {
     String column3;
     String column4;
 
+    String column5;
+    String column6;
+    String column7;
+    String column8;
+    String column9;
+    String column10;
+
     @DBRef
     File file;
 
@@ -64,6 +71,62 @@ public class Entry {
 
 
     public void setFileId(File file) {
+        this.file = file;
+    }
+
+    public String getColumn5() {
+        return column5;
+    }
+
+    public void setColumn5(String column5) {
+        this.column5 = column5;
+    }
+
+    public String getColumn6() {
+        return column6;
+    }
+
+    public void setColumn6(String column6) {
+        this.column6 = column6;
+    }
+
+    public String getColumn7() {
+        return column7;
+    }
+
+    public void setColumn7(String column7) {
+        this.column7 = column7;
+    }
+
+    public String getColumn8() {
+        return column8;
+    }
+
+    public void setColumn8(String column8) {
+        this.column8 = column8;
+    }
+
+    public String getColumn9() {
+        return column9;
+    }
+
+    public void setColumn9(String column9) {
+        this.column9 = column9;
+    }
+
+    public String getColumn10() {
+        return column10;
+    }
+
+    public void setColumn10(String column10) {
+        this.column10 = column10;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
         this.file = file;
     }
 }

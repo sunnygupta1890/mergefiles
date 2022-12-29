@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,7 +28,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -106,9 +105,14 @@ public class UploadController {
     Workbook workbook = new XSSFWorkbook(excelFile);
     Sheet datatypeSheet = workbook.getSheetAt(0);
     Iterator<Row> iterator = datatypeSheet.iterator();
+    int k = 0;
     while (iterator.hasNext()) {
       Row currentRow = iterator.next();
       Iterator<Cell> cellIterator = currentRow.iterator();
+      if(k == 0) {
+    	  k++;
+    	  continue;
+      }
       Entry entry = null;
       int i = 0;
       entry = new Entry();
@@ -117,17 +121,76 @@ public class UploadController {
         Cell currentCell = cellIterator.next();
         switch (i){
           case 0:
-            entry.setColumn1(currentCell.getStringCellValue());
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn1(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn1(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
             break;
           case 1:
-            entry.setColumn2(currentCell.getStringCellValue());
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn2(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn2(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
             break;
           case 2:
-            entry.setColumn3(currentCell.getStringCellValue());
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn3(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn3(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
             break;
           case 3:
-            entry.setColumn4(currentCell.getStringCellValue());
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn4(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn4(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
             break;
+          case 4:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn5(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn5(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+          case 5:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn6(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn6(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+          case 6:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn7(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn7(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+          case 7:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn8(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn8(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+          case 8:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn9(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn9(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+          case 9:
+        	  if(currentCell.getCellTypeEnum() == CellType.STRING) {
+        		  entry.setColumn10(currentCell.getStringCellValue());
+        	  }else {
+        		  entry.setColumn10(String.valueOf(currentCell.getNumericCellValue()));
+        	  }
+            break;
+           
         }
         i++;
       }
@@ -145,7 +208,7 @@ public class UploadController {
     for(Entry entry : entries){
       Row row = sheet.createRow(rowNum++);
       int colNum = 0;
-      for(int i=0; i<=3;i++){
+      for(int i=0; i<=9;i++){
         Cell cell = row.createCell(colNum++);
         switch (i){
           case 0:
@@ -159,6 +222,24 @@ public class UploadController {
             break;
           case 3:
             cell.setCellValue(entry.getColumn4());
+            break;
+          case 4:
+            cell.setCellValue(entry.getColumn5());
+            break;
+          case 5:
+            cell.setCellValue(entry.getColumn6());
+            break;
+          case 6:
+            cell.setCellValue(entry.getColumn7());
+            break;
+          case 7:
+            cell.setCellValue(entry.getColumn8());
+            break;
+          case 8:
+            cell.setCellValue(entry.getColumn9());
+            break;
+          case 9:
+            cell.setCellValue(Double.parseDouble(entry.getColumn10()));
             break;
         }
 
