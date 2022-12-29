@@ -1,28 +1,43 @@
 package org.ddstha.mergefiles.controller;
 
-import org.apache.poi.ss.usermodel.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.ddstha.mergefiles.model.Entry;
 import org.ddstha.mergefiles.service.FileEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.*;
-
 @Controller
 public class UploadController {
-
-  @Resource
-  private HttpServletResponse response;
 
   @Autowired
   private FileEntryService fileEntryService;
@@ -161,16 +176,19 @@ public class UploadController {
   }
 
   @RequestMapping(value = "/download", method = RequestMethod.GET)
-  public @ResponseBody void getFile(
-          @RequestParam("filename") String fileName) {
+  public ResponseEntity<org.springframework.core.io.Resource> getFile(@RequestParam("filename") String fileName) {
     try {
-      // get your file as InputStream
-
       String downloadPath = "/Users/sunnygupta/projects/tmpFiles/processed/";
-      InputStream is = new FileInputStream(new File(downloadPath+fileName));
-      // copy it to response's OutputStream
-      FileCopyUtils.copy(is, response.getOutputStream());
-      response.flushBuffer();
+      java.nio.file.Path filePath = Paths.get(downloadPath).toAbsolutePath().normalize().resolve(fileName).normalize();
+      org.springframework.core.io.Resource resource = new UrlResource(filePath.toUri());
+      String contentType = null;
+      if (contentType == null) {
+        contentType = "application/octet-stream";
+      }
+      return ResponseEntity.ok()
+              .contentType(MediaType.parseMediaType(contentType))
+              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+              .body(resource);
     } catch (IOException ex) {
       throw new RuntimeException("IOError writing file to output stream");
     }
